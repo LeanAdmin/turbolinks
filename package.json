@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/turbolinks/turbolinks.git"
+    "url": "git+https://github.com/LeanAdmin/turbolinks.git"
   },
   "keywords": [
     "turbolinks",
@@ -20,9 +20,9 @@
   "author": "javan, packagethief, sstephenson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/turbolinks/turbolinks/issues"
+    "url": "https://github.com/LeanAdmin/turbolinks/issues"
   },
-  "homepage": "https://github.com/turbolinks/turbolinks#readme",
+  "homepage": "https://github.com/LeanAdmin/turbolinks#readme",
   "devDependencies": {
     "intern": "^4.4.1",
     "leadfoot": "^1.7.6",
