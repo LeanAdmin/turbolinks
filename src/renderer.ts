@@ -13,9 +13,17 @@ export abstract class Renderer {
   abstract newBody: HTMLBodyElement
 
   renderView(callback: RenderCallback) {
-    this.delegate.viewWillRender(this.newBody)
-    callback()
-    this.delegate.viewRendered(this.newBody)
+      let render = (callback: CallableFunction) => {
+        this.delegate.viewWillRender(this.newBody)
+        callback()
+        this.delegate.viewRendered(this.newBody)
+      };
+
+      if (window.Turbolinks.pendingScripts && window.Turbolinks.pendingScripts.length) {
+        window.Turbolinks.loadedAllScripts.then(() => render(callback));
+      } else {
+        render(callback);
+      }
   }
 
   invalidateView() {

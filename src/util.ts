@@ -93,3 +93,47 @@ export function uuid() {
     }
   }).join("")
 }
+
+export class PendingAction<T = any> {
+    public readonly promise: Promise<T>;
+
+    public pending: boolean = true;
+    public resolved: boolean = false;
+    public rejected: boolean = false;
+
+    private _resolve: any = null;
+    private _reject: any = null;
+
+    constructor() {
+        this.promise = new Promise<T>((resolve, reject) => {
+            this._resolve = resolve;
+            this._reject = reject;
+        });
+    }
+
+    public resolve(value: T): void {
+        if (! this.pending) return;
+
+        this._resolve(value);
+
+        this.resolved = true;
+        this.pending = false;
+    }
+
+    public reject(reason?: any): void {
+        if (! this.pending) return;
+
+        this._reject(reason);
+
+        this.rejected = true;
+        this.pending = false;
+    }
+
+    public then(...args: any): Promise<T> {
+        return this.promise.then(...args);
+    }
+
+    public catch(...args: any): Promise<T> {
+        return this.promise.catch(...args);
+    }
+}

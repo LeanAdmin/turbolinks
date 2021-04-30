@@ -125,9 +125,18 @@ export class Visit {
       this.render(() => {
         this.cacheSnapshot()
         this.controller.render({ snapshot, isPreview }, this.performScroll)
-        this.adapter.visitRendered(this)
-        if (!isPreview) {
-          this.complete()
+
+        const finish = () => {
+          this.adapter.visitRendered(this)
+          if (!isPreview) {
+            this.complete()
+          }
+        }
+
+        if (window.Turbolinks.pendingScripts && window.Turbolinks.pendingScripts.length) {
+          window.Turbolinks.loadedAllScripts.then(() => finish())
+        } else {
+          finish()
         }
       })
     }
@@ -144,8 +153,16 @@ export class Visit {
           this.fail()
         } else {
           this.controller.render({ snapshot: Snapshot.fromHTMLString(response) }, this.performScroll)
-          this.adapter.visitRendered(this)
-          this.complete()
+          const finish = () => {
+            this.adapter.visitRendered(this)
+            this.complete()
+          }
+
+          if (window.Turbolinks.pendingScripts && window.Turbolinks.pendingScripts.length) {
+            window.Turbolinks.loadedAllScripts.then(() => finish());
+          } else {
+            finish()
+          }
         }
       })
     }

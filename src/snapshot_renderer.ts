@@ -1,7 +1,7 @@
 import { HeadDetails } from "./head_details"
 import { RenderCallback, RenderDelegate, Renderer } from "./renderer"
 import { Snapshot } from "./snapshot"
-import { array } from "./util"
+import { array, PendingAction } from "./util"
 
 export { RenderCallback, RenderDelegate } from "./renderer"
 
@@ -77,9 +77,31 @@ export class SnapshotRenderer extends Renderer {
   }
 
   copyNewHeadScriptElements() {
-    for (const element of this.getNewHeadScriptElements()) {
-      document.head.appendChild(this.createScriptElement(element))
-    }
+      window.Turbolinks.pendingScripts = [];
+      window.Turbolinks.loadedAllScripts = new PendingAction;
+
+      let unblockScript = (script: HTMLScriptElement) => {
+          window.Turbolinks.pendingScripts = window.Turbolinks.pendingScripts.filter((pending: HTMLScriptElement) => pending !== script);
+
+          if (!window.Turbolinks.pendingScripts.length) {
+              window.Turbolinks.loadedAllScripts.resolve(true);
+          }
+      }
+
+      for (const element of this.getNewHeadScriptElements()) {
+          let script: HTMLScriptElement = this.createScriptElement(element) as HTMLScriptElement;
+
+          script.onload = () => eval(script.getAttribute('onload') || '') || unblockScript(script);
+          script.onerror = () => window.location.reload();
+
+          window.Turbolinks.pendingScripts.push(script);
+
+          document.head.appendChild(script);
+      }
+
+      if (!window.Turbolinks.pendingScripts.length) {
+          window.Turbolinks.loadedAllScripts.resolve(true);
+      }
   }
 
   removeCurrentHeadProvisionalElements() {

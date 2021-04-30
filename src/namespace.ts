@@ -4,6 +4,9 @@ import { Locatable } from "./location"
 const controller = new Controller
 
 export default {
+  pendingScripts: [],
+  loadedAllScripts: [],
+
   get supported() {
     return Controller.supported
   },
