@@ -80,8 +80,10 @@ var SnapshotRenderer = /** @class */ (function (_super) {
         };
         var _loop_1 = function (element) {
             var script = this_1.createScriptElement(element);
-            script.onload = function () { return eval(script.getAttribute('onload') || '') || unblockScript(script); };
-            script.onerror = function () { return window.location.reload(); };
+            if (script.src) {
+                script.onload = function () { return eval(script.getAttribute('onload') || '') || unblockScript(script); };
+                script.onerror = function () { return window.location.reload(); };
+            }
             window.Turbolinks.pendingScripts.push(script);
             document.head.appendChild(script);
         };
