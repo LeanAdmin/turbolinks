@@ -83,8 +83,8 @@ var SnapshotRenderer = /** @class */ (function (_super) {
             if (script.src) {
                 script.onload = function () { return eval(script.getAttribute('onload') || '') || unblockScript(script); };
                 script.onerror = function () { return window.location.reload(); };
+                window.Turbolinks.pendingScripts.push(script);
             }
-            window.Turbolinks.pendingScripts.push(script);
             document.head.appendChild(script);
         };
         var this_1 = this;

@@ -94,9 +94,8 @@ export class SnapshotRenderer extends Renderer {
           if (script.src) {
               script.onload = () => eval(script.getAttribute('onload') || '') || unblockScript(script);
               script.onerror = () => window.location.reload();
+              window.Turbolinks.pendingScripts.push(script);
           }
-
-          window.Turbolinks.pendingScripts.push(script);
 
           document.head.appendChild(script);
       }
